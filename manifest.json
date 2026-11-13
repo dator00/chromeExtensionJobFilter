@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Job Filter",
+  "version": "0.1.0",
+  "description": "Hide promoted and older job cards on Indeed, LinkedIn, and ZipRecruiter.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.indeed.com/*",
+        "https://*.linkedin.com/jobs/*",
+        "https://*.ziprecruiter.com/*"
+      ],
+      "js": [
+        "core.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

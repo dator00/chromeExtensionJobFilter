@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Job Filter</title><link rel="stylesheet" href="popup.css"></head>
+<body><header><span class="eyebrow">A CLEARER JOB SEARCH</span><h1>Job Filter</h1><p>Make room for fresh opportunities.</p></header>
+<main><label class="toggle"><span>Enable filtering</span><input id="enabled" type="checkbox"></label>
+<label class="toggle"><span>Hide promoted jobs</span><input id="hidePromoted" type="checkbox"></label>
+<label class="field" for="maxDays">Keep jobs posted within</label><select id="maxDays"><option value="1">24 hours</option><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option><option value="0">Any time</option></select>
+<label class="toggle"><span>Hide jobs with no date</span><input id="hideUnknown" type="checkbox"></label>
+<p class="hint">Dates and promotion labels must be visible on the job card. Settings apply to all three sites.</p>
+<div id="status" role="status" aria-live="polite">Loading…</div><p id="saved" role="status"></p></main>
+<footer>Indeed · LinkedIn · ZipRecruiter<br>Private by design. No data leaves your browser.</footer>
+<script src="core.js"></script><script src="popup.js"></script></body></html>
