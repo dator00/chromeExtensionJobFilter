@@ -1,5 +1,5 @@
 (() => {
-  const { defaults, parseAge, reason } = JobFilter;
+  const { defaults, parseAge, parsePostingLabel, reason } = JobFilter;
   const host = location.hostname;
   const site = host.endsWith('linkedin.com') ? 'linkedin' : host.endsWith('indeed.com') ? 'indeed' : 'ziprecruiter';
   // Keep selectors narrow: only result cards, never the job detail panel.
@@ -15,8 +15,8 @@
       labels: '.job-card-container__footer-item, .job-card-list__footer-wrapper li'
     },
     ziprecruiter: {
-      cards: 'article.job_result, .job_result, [data-testid="job-card"], article:has(a[href*="/jobs/"]), article:has(a[href*="/c/"])',
-      dates: 'time, [data-testid="job-age"], [data-testid="posted-date"], .job_age, .posted_time',
+      cards: 'li[data-testid^="job-card-item-"], article[data-testid^="job-card-"], article.job_result, .job_result, [data-testid="job-card"], article:has(a[href*="/jobs/"]), article:has(a[href*="/c/"])',
+      dates: 'time, [data-testid="posted-row"], [data-testid="job-age"], [data-testid="posted-date"], .job_age, .posted_time',
       labels: '[data-testid*="sponsor"], [data-testid*="promot"]'
     }
   };
@@ -34,13 +34,13 @@
       const candidate = parseAge(el.getAttribute('datetime') || textOf(el));
       if (candidate !== null) { age = candidate; break; }
     }
-    // Some layouts have no stable date class. Only accept short, date-shaped text.
+    // React can split a label over spans/comments. Read the complete short
+    // label, including p/div layouts, without parsing arbitrary description text.
     if (age === null) {
-      for (const el of card.querySelectorAll('span, small, li')) {
-        const text = textOf(el).replace(/^(posted|reposted|employer active)\s+/i, '');
-        if (el.children.length === 0 && /^(?:\d+\+?\s+(?:minutes?|hours?|days?|weeks?|months?|years?)\s+ago|today|yesterday|just posted|just now)$/i.test(text)) {
-          age = parseAge(text); if (age !== null) break;
-        }
+      for (const el of card.querySelectorAll('span, small, li, p, div')) {
+        if (el.closest('h1, h2, h3, h4, h5, h6')) continue;
+        const candidate = parsePostingLabel(textOf(el));
+        if (candidate !== null) { age = candidate; break; }
       }
     }
     return { promoted, age };
@@ -75,7 +75,7 @@
   });
   new MutationObserver(schedule).observe(document.documentElement, {
     childList:true, subtree:true, characterData:true, attributes:true,
-    attributeFilter:['datetime','class','data-testid','aria-label']
+    attributeFilter:['datetime','class','data-testid','aria-label','href']
   });
   // Re-evaluate timestamps on long-lived tabs.
   setInterval(schedule, 60000);

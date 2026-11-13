@@ -17,12 +17,19 @@
     }
     return null;
   }
+  // Accept only complete posting labels here, not experience or benefit text.
+  function parsePostingLabel(value) {
+    const text = String(value || '').replace(/\s+/g, ' ').trim()
+      .replace(/^(?:posted|re[ -]?posted)\s*:?\s*/i, '');
+    if (!/^(?:\d+\s*\+?\s*(?:minutes?|mins?|hours?|hrs?|days?|weeks?|months?|years?)\s+ago|today|yesterday|just posted|just now|new)$/i.test(text)) return null;
+    return parseAge(text);
+  }
   function reason(info, settings) {
     if (!settings.enabled) return '';
     if (settings.hidePromoted && info.promoted) return 'promoted';
     if (info.age === null) return settings.hideUnknown ? 'unknown date' : '';
     return Number(settings.maxDays) > 0 && info.age > Number(settings.maxDays) ? 'old' : '';
   }
-  root.JobFilter = { defaults, parseAge, reason };
+  root.JobFilter = { defaults, parseAge, parsePostingLabel, reason };
   if (typeof module !== 'undefined') module.exports = root.JobFilter;
 })(globalThis);

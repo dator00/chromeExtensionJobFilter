@@ -15,3 +15,12 @@ test('filter priorities, boundary, unknowns, disabled and unlimited age',()=>{
   assert.equal(reason({promoted:true,age:99},{...defaults,enabled:false}),'');
   assert.equal(reason({promoted:false,age:99},{...defaults,maxDays:0}),'');
 });
+
+test('posting labels support reposted dates and reject unrelated text',()=>{
+  const {parsePostingLabel} = require('../core.js');
+  for (const text of ['Re-posted 9 days ago', 'Reposted 9 days ago', 'Posted: 9 days ago', '9 days ago']) assert.equal(parsePostingLabel(text),9);
+  assert.equal(parsePostingLabel('Re-posted\n 30+ days ago'),30);
+  assert.equal(parsePostingLabel('Posted today'),0);
+  assert.equal(parsePostingLabel('Posted 2 hrs ago'),2/24);
+  for(const text of ['Employer active 9 days ago','9 days paid vacation','Senior Engineer 9 years experience','', 'Date posted']) assert.equal(parsePostingLabel(text),null);
+});

@@ -10,6 +10,12 @@ Hide promoted jobs and postings older than 1, 3, 7, 14, or 30 days on Indeed.com
 
 No build, account, API key, or server needed. Disable filtering in the popup to restore cards. Chrome’s Remove button uninstalls it.
 
+## Update an existing installation
+Download and extract the latest ZIP. Replace the files in the folder Chrome already loads, then open `chrome://extensions`, click Job Filter’s **Reload** button, and refresh your job-search tabs. Check **Details** for version 0.1.1. GitHub changes do not automatically update an unpacked extension.
+
+## ZipRecruiter dates
+Current result cards can use per-job IDs and button-based titles; version 0.1.1 recognizes this layout and “Re-posted” date labels, including labels split across elements. Some cards expose no date until the detail panel is opened. The extension does not transfer the selected job’s detail date to other cards or open every result. Use ZipRecruiter’s **Date posted** filter for date-limited search results, or enable **Hide jobs with no date** (this can hide all cards on layouts without card dates).
+
 ## How it works
 Manifest V3 content scripts inspect job result cards on the three supported sites. A MutationObserver rechecks dynamically loaded cards. Cards are hidden reversibly with CSS. Settings persist locally across browser restarts and apply across supported sites. No analytics, network requests, application automation, or collection of job data. Only the storage permission is requested; site access is limited through content-script URL matches. Indeed country domains other than indeed.com are not included.
 
